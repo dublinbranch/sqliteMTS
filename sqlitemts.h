@@ -25,6 +25,8 @@ class SqliteMTS : sqlite3pp::noncopyable {
 
 class SqliteTool : sqlite3pp::noncopyable {
       public:
+	SqliteTool(){};
+	bool setDb(const QByteArray db);
 	SqliteTool(const QByteArray db);
 	bool runnable(const QString& key, qint64 second);
 

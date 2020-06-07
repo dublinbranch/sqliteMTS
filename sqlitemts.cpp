@@ -64,8 +64,13 @@ bool SqliteMTS::execute(sqlite3pp::command& cmd) {
  * @param time
  * @return true: we can run, false: do not run
  */
-SqliteTool::SqliteTool(const QByteArray db) {
+bool SqliteTool::setDb(const QByteArray db)
+{
 	this->sqlite.connect(db);
+}
+
+SqliteTool::SqliteTool(const QByteArray db) {
+	setDb(db);
 }
 
 bool SqliteTool::runnable(const QString& key, qint64 second) {
