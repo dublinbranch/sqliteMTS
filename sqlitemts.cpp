@@ -64,9 +64,10 @@ bool SqliteMTS::execute(sqlite3pp::command& cmd) {
  * @param time
  * @return true: we can run, false: do not run
  */
-bool SqliteTool::setDb(const QByteArray db)
-{
+bool SqliteTool::setDb(const QByteArray db) {
 	this->sqlite.connect(db);
+	//TODO fai dei check
+	return true;
 }
 
 SqliteTool::SqliteTool(const QByteArray db) {
@@ -101,7 +102,7 @@ bool SqliteTool::runnable(const QString& key, qint64 second) {
 bool SqliteTool::hasTable(QByteArray table) {
 	QByteArray sql = "SELECT name FROM sqlite_master WHERE type='table' AND name='" + table + "';";
 	auto       res = this->sqlite.fetch(sql);
-	if(!res->column_count()){
+	if (!res->column_count()) {
 		return false;
 	}
 	for (auto row : *res) {
