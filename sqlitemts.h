@@ -11,7 +11,7 @@
 #include <mutex>
 class SqliteMTS : sqlite3pp::noncopyable {
       public:
-	SqliteMTS()  {};
+	SqliteMTS(){};
 	SqliteMTS(QByteArray db);
 	int                               connect(QByteArray db);
 	std::unique_ptr<sqlite3pp::query> fetch(QByteArray sql);
@@ -28,6 +28,7 @@ class SqliteTool : sqlite3pp::noncopyable {
 	SqliteTool(){};
 	bool setDb(const QByteArray db);
 	SqliteTool(const QByteArray db);
+	bool runnable_64(const QString& key, qint64 second);
 	bool runnable(const QString& key, qint64 second);
 
 	bool hasTable(QByteArray table);

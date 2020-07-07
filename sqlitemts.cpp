@@ -74,6 +74,10 @@ SqliteTool::SqliteTool(const QByteArray db) {
 	setDb(db);
 }
 
+bool SqliteTool::runnable_64(const QString& key, qint64 second) {
+	return runnable(key.toUtf8().toBase64(), second);
+}
+
 bool SqliteTool::runnable(const QString& key, qint64 second) {
 	prepareRunnable();
 	auto now = QDateTime::currentSecsSinceEpoch();
