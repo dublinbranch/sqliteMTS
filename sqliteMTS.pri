@@ -9,3 +9,4 @@ HEADERS += \
     $$PWD/sqlite3pp/src/sqlite3ppext.h \
     $$PWD/sqlitemts.h
 
+LIBS += -lsqlite3
