@@ -74,30 +74,34 @@ SqliteTool::SqliteTool(const QByteArray db) {
 	setDb(db);
 }
 
-bool SqliteTool::runnable_64(const QString& key, qint64 second) {
-	return runnable(key.toUtf8().toBase64(), second);
+bool SqliteTool::runnable_64(const QString& key, qint64 second, float cdMultiplier) {
+	return runnable(key.toUtf8().toBase64(), second, cdMultiplier);
 }
 
-bool SqliteTool::runnable(const QString& key, qint64 second) {
+bool SqliteTool::runnable(const QString& key, qint64 second, float cdMultiplier) {
 	prepareRunnable();
+	int  lastRun, coolDown = second;
 	auto now = QDateTime::currentSecsSinceEpoch();
 	{
-		static const QString skel = "SELECT lastRun FROM runnable WHERE operationCode = '%1' ORDER BY lastRun DESC LIMIT 1";
-
-		QByteArray sql = skel.arg(key).toUtf8();
-		auto       res = this->sqlite.fetch(sql);
+		static const QString skel = "SELECT lastRun,coolDown FROM runnable WHERE operationCode = '%1' ORDER BY lastRun DESC LIMIT 1";
+		QByteArray           sql  = skel.arg(key).toUtf8();
+		auto                 res  = this->sqlite.fetch(sql);
 		for (auto row : *res) {
-			int lastRun;
-			row.getter() >> lastRun;
-			if (lastRun + second > now) {
+			row.getter(0) >> lastRun;
+			row.getter(1) >> coolDown;
+			if (cdMultiplier > 0) {
+				coolDown = coolDown * cdMultiplier;
+			}
+			if (lastRun + coolDown > now) {
 				return false;
 			}
 		}
 	}
 	{
-		sqlite3pp::command cmd(this->sqlite.db, "INSERT INTO runnable (operationCode,lastRun) VALUES (?,?)");
+		sqlite3pp::command cmd(this->sqlite.db, "INSERT INTO runnable (operationCode,lastRun,coolDown) VALUES (?,?,?)");
 		auto               k = key.toUtf8();
-		cmd.binder() << k.constData() << now;
+
+		cmd.binder() << k.constData() << now << coolDown;
 		this->sqlite.execute(cmd);
 	}
 	return true;
@@ -129,7 +133,8 @@ bool SqliteTool::prepareRunnable() {
 CREATE TABLE `runnable` (
      `id` INTEGER PRIMARY KEY AUTOINCREMENT,
      `operationCode` TEXT,
-     `lastRun` INTEGER
+     `lastRun` INTEGER,
+     `coolDown` INTEGER
 );
 CREATE INDEX lastRun ON runnable(lastRun);
 )";

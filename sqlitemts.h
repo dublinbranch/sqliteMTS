@@ -28,8 +28,22 @@ class SqliteTool : sqlite3pp::noncopyable {
 	SqliteTool(){};
 	bool setDb(const QByteArray db);
 	SqliteTool(const QByteArray db);
-	bool runnable_64(const QString& key, qint64 second);
-	bool runnable(const QString& key, qint64 second);
+	/**
+	 * @brief runnable_64
+	 * @param key
+	 * @param second of cooldown
+	 * @param cdMultiplier increases each time the cooldown
+	 * @return 
+	 */
+	bool runnable_64(const QString& key, qint64 second, float cdMultiplier = 0);
+	/**
+	 * @brief runnable
+	 * @param key
+	 * @param second of cooldown
+	 * @param cdMultiplier increases each time the cooldown
+	 * @return 
+	 */
+	bool runnable(const QString& key, qint64 second, float cdMultiplier = 0);
 
 	bool hasTable(QByteArray table);
 
