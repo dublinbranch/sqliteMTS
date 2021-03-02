@@ -9,6 +9,7 @@ SqliteMTS::SqliteMTS(QByteArray db) {
 }
 
 int SqliteMTS::connect(QByteArray db) {
+	std::lock_guard<std::mutex> lock_guard(mutex);
 	auto status = this->db.connect(db.constData(), SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 	this->db.enable_extended_result_codes();
 	return status;
