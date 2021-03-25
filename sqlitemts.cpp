@@ -124,6 +124,11 @@ bool SqliteTool::hasTable(QByteArray table) {
 }
 
 bool SqliteTool::prepareRunnable() {
+	static std::mutex mutex;
+	// const serve?
+	//https://en.cppreference.com/w/cpp/thread/lock_guard
+	const std::lock_guard<std::mutex> lock(mutex);
+
 	//this will just check  if the table exist, if not create it (used for new database)
 	if (runnableOK) {
 		return runnableOK;
