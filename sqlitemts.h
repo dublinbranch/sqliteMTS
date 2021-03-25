@@ -25,8 +25,6 @@ class SqliteMTS : sqlite3pp::noncopyable {
 
 class SqliteTool : sqlite3pp::noncopyable {
       public:
-	SqliteTool(){};
-	bool setDb(const QByteArray db);
 	SqliteTool(const QByteArray db);
 	/**
 	 * @brief runnable_64
@@ -49,6 +47,8 @@ class SqliteTool : sqlite3pp::noncopyable {
 
       private:
 	SqliteMTS sqlite;
+	bool      setDb(const QByteArray db);
 	bool      runnableOK = false;
-	bool      prepareRunnable();
+	//Non thread safe init called before usage when setting the DB
+	bool prepareRunnable();
 };

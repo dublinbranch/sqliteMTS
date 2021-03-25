@@ -66,7 +66,7 @@ bool SqliteMTS::execute(sqlite3pp::command& cmd) {
  */
 bool SqliteTool::setDb(const QByteArray db) {
 	this->sqlite.connect(db);
-	//TODO fai dei check
+	prepareRunnable();
 	return true;
 }
 
@@ -78,6 +78,7 @@ bool SqliteTool::runnable_64(const QString& key, qint64 second, float cdMultipli
 	return runnable(key.toUtf8().toBase64(), second, cdMultiplier);
 }
 
+// viene usato il coolDown che è stato indicato alla chiamata precedente
 bool SqliteTool::runnable(const QString& key, qint64 second, float cdMultiplier) {
 	prepareRunnable();
 	int  lastRun, coolDown = second;
@@ -124,10 +125,6 @@ bool SqliteTool::hasTable(QByteArray table) {
 }
 
 bool SqliteTool::prepareRunnable() {
-	static std::mutex mutex;
-	// const serve?
-	//https://en.cppreference.com/w/cpp/thread/lock_guard
-	const std::lock_guard<std::mutex> lock(mutex);
 
 	//this will just check  if the table exist, if not create it (used for new database)
 	if (runnableOK) {
