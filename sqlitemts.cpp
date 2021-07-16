@@ -4,12 +4,12 @@
 #include <QDateTime>
 #include <QDebug>
 
-SqliteMTS::SqliteMTS(QByteArray db) {
-	connect(db);
+SqliteMTS::SqliteMTS(QByteArray _db) {
+	connect(_db);
 }
 
-int SqliteMTS::connect(QByteArray db) {
-	auto status = this->db.connect(db.constData(), SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+int SqliteMTS::connect(QByteArray _db) {
+	auto status = this->db.connect(_db.constData(), SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 	this->db.enable_extended_result_codes();
 	return status;
 }

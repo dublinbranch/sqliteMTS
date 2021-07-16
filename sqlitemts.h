@@ -12,8 +12,8 @@
 class SqliteMTS : sqlite3pp::noncopyable {
       public:
 	SqliteMTS(){};
-	SqliteMTS(QByteArray db);
-	int                               connect(QByteArray db);
+	SqliteMTS(QByteArray _db);
+	int                               connect(QByteArray _db);
 	std::unique_ptr<sqlite3pp::query> fetch(QByteArray sql);
 	bool                              execute(QByteArray sql);
 	bool                              execute(sqlite3pp::command& cmd);
