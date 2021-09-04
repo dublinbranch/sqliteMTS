@@ -44,14 +44,23 @@ bool SqliteMTS::execute(QByteArray sql) {
 
 bool SqliteMTS::execute(sqlite3pp::command& cmd) {
 	std::lock_guard<std::mutex> lock_guard(mutex);
+	QString                     errorMsg;
 	try {
 		cmd.execute_all();
 		auto errNum = this->db.error_code();
-		if (errNum != 0 && errNum != 101) {
-			auto errMsg = this->db.error_msg();
-			qWarning().noquote() << "error in statement" << errMsg << QStacker16Light();
-			return false;
+		switch (errNum) {
+		case SQLITE_DONE:
+		case SQLITE_OK:
+		case SQLITE_ROW:
+			return true;
+		case SQLITE_READONLY:
+			errorMsg = this->db.error_msg();
+			errorMsg += ", not only the file must be writable but ALSO THE FOLDER!";
+		default:
+			errorMsg = this->db.error_msg();
 		}
+		qWarning().noquote() << "error in statement" << errorMsg << QStacker16Light();
+		return false;
 	} catch (...) {
 		return false;
 	}
