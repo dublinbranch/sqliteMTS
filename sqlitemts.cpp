@@ -56,8 +56,10 @@ bool SqliteMTS::execute(sqlite3pp::command& cmd) {
 		case SQLITE_READONLY:
 			errorMsg = this->db.error_msg();
 			errorMsg += ", not only the file must be writable but ALSO THE FOLDER!";
+			break;
 		default:
 			errorMsg = this->db.error_msg();
+			break;
 		}
 		qWarning().noquote() << "error in statement" << errorMsg << QStacker16Light();
 		return false;
